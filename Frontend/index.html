@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBM LearnAdapt | AI Quiz Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --slate-900: #0F172A;
+            --slate-800: #1E293B;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748B;
+            --slate-400: #94A3B8;
+            --slate-300: #CBD5E1;
+            --slate-200: #E2E8F0;
+            --blue-500: #3B82F6;
+            --blue-600: #2563EB;
+            --green-400: #4ADE80;
+            --green-600: #16A34A;
+            --red-400: #F87171;
+            --red-500: #EF4444;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--slate-900);
+            color: var(--slate-200);
+            line-height: 1.6;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Card and Form Styles */
+        .card {
+            background-color: var(--slate-800);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+
+        .max-w-lg { max-width: 32rem; }
+        .max-w-2xl { max-width: 42rem; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-5xl { max-width: 64rem; }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--slate-300);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background-color: var(--slate-700);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 2px solid var(--slate-600);
+            transition: all 0.2s;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-textarea {
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn {
+            font-weight: 700;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--blue-600);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--blue-500);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--slate-600);
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: var(--slate-500);
+        }
+
+        .btn-green {
+            background-color: var(--green-600);
+            color: white;
+        }
+        .btn-green:hover {
+            background-color: var(--green-400);
+        }
+
+        .btn:disabled {
+            background-color: var(--slate-500);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* Layout */
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .gap-6 { gap: 1.5rem; }
+        .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+        .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 1.5rem; }
+        .space-y-8 > :not([hidden]) ~ :not([hidden]) { margin-top: 2rem; }
+
+        /* Text & Utility */
+        .text-center { text-align: center; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .w-full { width: 100%; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-slate-400 { color: var(--slate-400); }
+        .text-slate-500 { color: var(--slate-500); }
+        .text-green-400 { color: var(--green-400); }
+        .text-red-400 { color: var(--red-400); }
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .justify-end { justify-content: flex-end; }
+        .items-center { align-items: center; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* Quiz Screen Specific */
+        .progress-bar-container {
+            width: 100%;
+            background-color: var(--slate-700);
+            border-radius: 9999px;
+            height: 0.625rem;
+        }
+        .progress-bar {
+            background-color: var(--blue-500);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+            width: 0%;
+        }
+        .badge {
+            font-weight: 600;
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* Custom Radio/Checkbox */
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid var(--slate-600);
+            background-color: var(--slate-700);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.75rem;
+        }
+        .option-label:hover {
+            background-color: var(--slate-600);
+            border-color: var(--blue-500);
+        }
+        .option-label input {
+            display: none;
+        }
+        .option-label .custom-control {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--slate-500);
+            margin-right: 0.75rem;
+            margin-top: 0.125rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .option-label .custom-control.radio {
+            border-radius: 50%;
+        }
+        .option-label .custom-control.checkbox {
+            border-radius: 0.25rem;
+        }
+        .option-label input:checked + .custom-control {
+            background-color: var(--blue-500);
+            border-color: var(--blue-500);
+        }
+        .option-label input:checked + .custom-control::after {
+            content: '✓';
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        .option-label.selected {
+            border-color: var(--blue-500);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .option-text {
+            flex: 1;
+            color: var(--slate-200);
+        }
+
+        /* Code blocks */
+        .code-block {
+            background-color: var(--slate-900);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--slate-600);
+        }
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            color: var(--slate-200);
+            font-size: 0.875rem;
+            white-space: pre-wrap;
+        }
+
+        /* Report Screen */
+        .score-display {
+            text-align: center;
+            padding-bottom: 2rem;
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--blue-500) 0%, var(--green-400) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .breakdown-item {
+            background-color: var(--slate-900);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--slate-700);
+        }
+        .breakdown-item summary {
+            font-weight: 600;
+            font-size: 1.125rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+        }
+        .breakdown-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .breakdown-content {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--slate-700);
+            color: var(--slate-300);
+        }
+        .correct-icon { color: var(--green-400); font-size: 1.5rem; }
+        .incorrect-icon { color: var(--red-500); font-size: 1.5rem; }
+        .breakdown-content code {
+            font-family: 'Courier New', monospace;
+            padding: 0.2rem 0.4rem;
+            background-color: var(--slate-700);
+            border-radius: 0.25rem;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 4rem;
+            height: 4rem;
+            border: 4px solid var(--slate-600);
+            border-top-color: var(--blue-500);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        .loading-text {
+            margin-top: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error Box */
+        .error-box {
+            color: var(--red-400);
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--red-500);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .grid-cols-2 { grid-template-columns: 1fr; }
+            .card { padding: 1.5rem; }
+            .main-container { padding: 0.5rem; }
+            .text-4xl { font-size: 2rem; }
+        }
+
+        ul, ol {
+            padding-left: 1.5rem;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <main class="main-container">
+        <div id="loading-screen" class="screen hidden">
+            <div class="text-center">
+                <div class="spinner"></div>
+                <p id="loading-message" class="loading-text">Generating your personalized quiz...</p>
+            </div>
+        </div>
+
+        <div id="error-screen" class="screen hidden">
+            <div class="card max-w-lg text-center">
+                <h2 class="text-2xl font-bold mb-4">⚠️ Error Occurred</h2>
+                <div id="error-message" class="error-box mb-4"></div>
+                <button id="restart-from-error-btn" class="btn btn-primary">Try Again</button>
+            </div>
+        </div>
+
+        <div id="setup-screen" class="screen">
+            <div class="card max-w-2xl">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold mb-2">🎓 IBM LearnAdapt</h1>
+                    <p class="text-slate-400">AI-Powered JEE-Style Quiz Platform</p>
+                </div>
+                
+                <form id="quiz-setup-form" class="space-y-6">
+                    <div>
+                        <label for="subject" class="form-label">Subject</label>
+                        <select id="subject" name="subject" class="form-input form-select">
+                            <option value="dsa">📊 Data Structures & Algorithms</option>
+                            <option value="aiml">🤖 AI/ML</option>
+                            <option value="os" selected>💾 Operating Systems</option>
+                            <option value="dbms">🗄️ Database Management</option>
+                            <option value="webdev">🌐 Web Development</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="topic" class="form-label">Topic</label>
+                        <input type="text" id="topic" name="topic" value="CPU Scheduling Algorithms" class="form-input" 
+                               placeholder="e.g., Recursion, SQL Joins..." required>
+                        <p class="text-slate-400 text-sm mt-2">Be specific for better AI-generated questions</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label for="num_questions" class="form-label">Questions</label>
+                            <select id="num_questions" name="num_questions" class="form-input form-select">
+                                <option value="3">3 Questions</option>
+                                <option value="5" selected>5 Questions</option>
+                                <option value="7">7 Questions</option>
+                                <option value="10">10 Questions</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="difficulty" class="form-label">Difficulty</label>
+                            <select id="difficulty" name="difficulty" class="form-input form-select">
+                                <option value="easy">🟢 Easy</option>
+                                <option value="medium" selected>🟡 Medium</option>
+                                <option value="hard">🔴 Hard</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" id="start-quiz-btn" class="btn btn-primary w-full">
+                            🚀 Generate AI Quiz
+                        </button>
+                        <p class="text-slate-400 text-sm mt-2">Powered by Groq + Gemini APIs</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="quiz-screen" class="screen hidden">
+            <div class="card max-w-4xl">
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="question-counter" class="text-slate-400 text-sm"></span>
+                        <span id="question-type-badge" class="badge"></span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div id="question-text" class="text-xl mb-4"></div>
+                    <div id="question-code-block" class="code-block hidden">
+                        <code id="question-code"></code>
+                    </div>
+                </div>
+
+                <div id="options-container" class="mb-6"></div>
+                
+                <div class="mb-8">
+                    <label for="reasoning" class="form-label">
+                        💭 Your Reasoning <span class="text-slate-500">(Optional but recommended)</span>
+                    </label>
+                    <textarea id="reasoning" rows="3" class="form-input form-textarea" 
+                              placeholder="Explain your thought process and why you chose this answer..."></textarea>
+                </div>
+
+                <div class="flex justify-end">
+                    <button id="next-submit-btn" class="btn btn-secondary">Next Question →</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="report-screen" class="screen hidden">
+            <div class="max-w-5xl mx-auto space-y-8">
+                <div class="card">
+                    <div class="text-center">
+                        <h1 class="text-4xl font-bold mb-4">📊 Quiz Report</h1>
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <span id="report-score">0%</span>
+                            </div>
+                            <p id="report-summary-text" class="text-slate-400 mt-4"></p>
+                            <p id="report-correct-ratio" class="text-2xl font-semibold mt-2"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card">
+                        <h2 class="text-xl font-semibold mb-4 text-green-400">💪 Topic Strengths</h2>
+                        <ul id="report-strengths" class="space-y-2"></ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h2 class="text-xl font-semibold mb-4 text-red-400">🎯 Topic Weaknesses</h2>
+                        <ul id="report-weaknesses" class="space-y-2"></ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h2 class="text-xl font-semibold mb-4">💡 Action Plan</h2>
+                        <ol id="report-action-plan" class="space-y-2"></ol>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="text-2xl font-semibold mb-4">🧠 Reasoning Quality</h2>
+                    <p id="report-reasoning" class="text-slate-300"></p>
+                </div>
+                
+                <div class="card">
+                    <h2 class="text-2xl font-semibold mb-4">📝 Question-by-Question Analysis</h2>
+                    <div id="detailed-breakdown-container" class="space-y-4"></div>
+                </div>
+
+                <div class="text-center">
+                    <button id="restart-quiz-btn" class="btn btn-primary">
+                        🔄 Take Another Quiz
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuration
+            const API_BASE_URL = "http://localhost:8000/api";
+            
+            // State
+            let quizData = null;
+            let userAnswers = [];
+            let currentQuestionIndex = 0;
+
+            // DOM Elements
+            const screens = {
+                loading: document.getElementById('loading-screen'),
+                setup: document.getElementById('setup-screen'),
+                quiz: document.getElementById('quiz-screen'),
+                report: document.getElementById('report-screen'),
+                error: document.getElementById('error-screen'),
+            };
+
+            const elements = {
+                setupForm: document.getElementById('quiz-setup-form'),
+                nextSubmitBtn: document.getElementById('next-submit-btn'),
+                restartQuizBtn: document.getElementById('restart-quiz-btn'),
+                restartFromErrorBtn: document.getElementById('restart-from-error-btn'),
+                loadingMessage: document.getElementById('loading-message'),
+                errorMessage: document.getElementById('error-message'),
+            };
+
+            // Utility Functions
+            const showScreen = (screenName) => {
+                Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+                screens[screenName].classList.remove('hidden');
+            };
+
+            const showError = (message) => {
+                elements.errorMessage.textContent = message;
+                showScreen('error');
+            };
+
+            // API Functions
+            const api = {
+                generateQuiz: async (config) => {
+                    const response = await fetch(`${API_BASE_URL}/quiz/generate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...config,
+                            question_types: ['MCQ', 'MSQ', 'PREDICT_OUTPUT']
+                        }),
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to generate quiz. Please check if the backend is running.');
+                    }
+                    return response.json();
+                },
+
+                evaluateQuiz: async (submission) => {
+                    const response = await fetch(`${API_BASE_URL}/quiz/evaluate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(submission),
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to evaluate quiz. Please try again.');
+                    }
+                    return response.json();
+                }
+            };
+
+            // Quiz Setup
+            elements.setupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                elements.loadingMessage.textContent = "🤖 AI is generating your personalized quiz...";
+                showScreen('loading');
+                
+                try {
+                    const formData = new FormData(elements.setupForm);
+                    const config = Object.fromEntries(formData.entries());
+                    config.num_questions = parseInt(config.num_questions, 10);
+
+                    const data = await api.generateQuiz(config);
+                    
+                    if (data.success && data.quiz && data.quiz.length > 0) {
+                        quizData = data;
+                        userAnswers = Array(data.quiz.length).fill(null).map(() => ({ 
+                            answer: null, 
+                            reasoning: '' 
+                        }));
+                        currentQuestionIndex = 0;
+                        renderQuestion();
+                        showScreen('quiz');
+                    } else {
+                        throw new Error('No questions were generated. The AI might be having trouble with the topic. Please try different settings.');
+                    }
+                } catch (err) {
+                    console.error('Quiz generation error:', err);
+                    showError(err.message);
+                }
+            });
+
+            // Question Rendering
+            const renderQuestion = () => {
+                const question = quizData.quiz[currentQuestionIndex];
+                
+                // Update progress
+                const progressPercent = ((currentQuestionIndex) / quizData.quiz.length) * 100;
+                document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+                document.getElementById('question-counter').textContent = 
+                    `Question ${currentQuestionIndex + 1} of ${quizData.quiz.length}`;
+                document.getElementById('question-type-badge').textContent = 
+                    question.type.replace('_', ' ');
+                
+                // Handle question text with potential code blocks
+                const questionText = question.question || 'Question text not available';
+                const codeBlockRegex = /```([\s\S]*?)```/;
+                const match = questionText.match(codeBlockRegex);
+
+                if (match) {
+                    const preCodeText = questionText.substring(0, match.index);
+                    const codeContent = match[1];
+                    document.getElementById('question-text').textContent = preCodeText;
+                    document.getElementById('question-code').textContent = codeContent.trim();
+                    document.getElementById('question-code-block').classList.remove('hidden');
+                } else {
+                    document.getElementById('question-text').textContent = questionText;
+                    document.getElementById('question-code-block').classList.add('hidden');
+                }
+
+                // Render options
+                renderOptions(question);
+                
+                // Load saved reasoning
+                document.getElementById('reasoning').value = userAnswers[currentQuestionIndex].reasoning || '';
+
+                // Update button text and style
+                const isLastQuestion = currentQuestionIndex === quizData.quiz.length - 1;
+                elements.nextSubmitBtn.textContent = isLastQuestion ? '🏁 Submit Quiz' : 'Next Question →';
+                elements.nextSubmitBtn.className = isLastQuestion ? 'btn btn-green' : 'btn btn-primary';
+            };
+
+            const renderOptions = (question) => {
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                const savedAnswer = userAnswers[currentQuestionIndex].answer;
+
+                switch (question.type) {
+                    case 'MCQ':
+                        Object.entries(question.options || {}).forEach(([key, value]) => {
+                            const isChecked = savedAnswer === key;
+                            const optionEl = document.createElement('label');
+                            optionEl.className = `option-label ${isChecked ? 'selected' : ''}`;
+                            optionEl.innerHTML = `
+                                <input type="radio" name="option" value="${key}" ${isChecked ? 'checked' : ''}>
+                                <span class="custom-control radio"></span>
+                                <span class="option-text">${key}. ${value}</span>
+                            `;
+                            container.appendChild(optionEl);
+                        });
+                        break;
+
+                    case 'MSQ':
+                        const msqAnswers = new Set(Array.isArray(savedAnswer) ? savedAnswer : []);
+                        Object.entries(question.options || {}).forEach(([key, value]) => {
+                            const isChecked = msqAnswers.has(key);
+                            const optionEl = document.createElement('label');
+                            optionEl.className = `option-label ${isChecked ? 'selected' : ''}`;
+                            optionEl.innerHTML = `
+                                <input type="checkbox" name="option" value="${key}" ${isChecked ? 'checked' : ''}>
+                                <span class="custom-control checkbox"></span>
+                                <span class="option-text">${key}. ${value}</span>
+                            `;
+                            container.appendChild(optionEl);
+                        });
+                        break;
+
+                    case 'PREDICT_OUTPUT':
+                        container.innerHTML = `
+                            <div>
+                                <label class="form-label">Enter the exact output:</label>
+                                <input type="text" id="predict-output-input" class="form-input" 
+                                       placeholder="Type the exact program output..." 
+                                       value="${savedAnswer || ''}">
+                            </div>
+                        `;
+                        break;
+                }
+                
+                container.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('change', updateOptionStyling);
+                });
+            };
+
+            const updateOptionStyling = () => {
+                const container = document.getElementById('options-container');
+                container.querySelectorAll('.option-label').forEach(label => label.classList.remove('selected'));
+                container.querySelectorAll('input:checked').forEach(input => {
+                    input.closest('.option-label').classList.add('selected');
+                });
+            };
+
+            // Answer Handling
+            const saveCurrentAnswer = () => {
+                const question = quizData.quiz[currentQuestionIndex];
+                let answer = null;
+
+                switch (question.type) {
+                    case 'MCQ':
+                        const selectedRadio = document.querySelector('input[name="option"]:checked');
+                        if (selectedRadio) answer = selectedRadio.value;
+                        break;
+                    case 'MSQ':
+                        answer = Array.from(document.querySelectorAll('input[name="option"]:checked'))
+                                      .map(cb => cb.value);
+                        break;
+                    case 'PREDICT_OUTPUT':
+                        const outputInput = document.getElementById('predict-output-input');
+                        if (outputInput) answer = outputInput.value.trim();
+                        break;
+                }
+
+                userAnswers[currentQuestionIndex].answer = answer;
+                userAnswers[currentQuestionIndex].reasoning = document.getElementById('reasoning').value.trim();
+            };
+
+            // Navigation
+            elements.nextSubmitBtn.addEventListener('click', () => {
+                saveCurrentAnswer();
+                
+                if (currentQuestionIndex < quizData.quiz.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                } else {
+                    submitQuiz();
+                }
+            });
+
+            // Quiz Submission
+            const submitQuiz = async () => {
+                elements.loadingMessage.textContent = "🔍 AI is analyzing your answers...";
+                showScreen('loading');
+
+                try {
+                    const submission = {
+                        quiz_id: quizData.quiz_id,
+                        student_id: "demo_student_" + Date.now(),
+                        answers: userAnswers.map((ua, index) => ({
+                            question_id: quizData.quiz[index].id,
+                            answer: ua.answer,
+                            reasoning: ua.reasoning
+                        }))
+                    };
+
+                    const data = await api.evaluateQuiz(submission);
+                    
+                    if (data.success) {
+                        renderReport(data);
+                        showScreen('report');
+                    } else {
+                        throw new Error(data.detail || 'Evaluation failed.');
+                    }
+                } catch (err) {
+                    console.error('Quiz evaluation error:', err);
+                    showError(err.message);
+                }
+            };
+
+            // Report Rendering
+            const renderReport = (data) => {
+                const { report, details } = data;
+                const summary = report.overall_summary;
+                
+                const score = summary.total_score ?? 
+                              ((summary.problems_correct / summary.total_problems) * 100);
+
+                document.getElementById('report-score').textContent = `${Math.round(score)}%`;
+                document.getElementById('report-summary-text').textContent = summary.summary || 'Quiz completed.';
+                document.getElementById('report-correct-ratio').textContent = 
+                    `${summary.problems_correct}/${summary.total_problems} Correct`;
+                
+                const createListItems = (items) => (items || []).map(item => `<li>${item}</li>`).join('');
+                
+                if (report.topic_analysis) {
+                    document.getElementById('report-strengths').innerHTML = 
+                        createListItems(report.topic_analysis.strengths);
+                    document.getElementById('report-weaknesses').innerHTML = 
+                        createListItems(report.topic_analysis.weaknesses);
+                }
+                
+                document.getElementById('report-reasoning').textContent = 
+                    report.reasoning_quality || 'No reasoning analysis available.';
+                document.getElementById('report-action-plan').innerHTML = 
+                    createListItems(report.action_plan);
+                
+                if (details && details.length > 0) {
+                    const breakdownHtml = details.map((item, index) => {
+                        const userAnswerText = Array.isArray(item.user_answer) ? 
+                            `[${(item.user_answer || []).join(', ') || ' '}]` : 
+                            (item.user_answer || 'Not answered');
+                        const correctAnswerText = Array.isArray(item.correct_answer) ? 
+                            `[${item.correct_answer.join(', ')}]` : 
+                            item.correct_answer;
+
+                        return `
+                            <details class="breakdown-item">
+                                <summary>
+                                    <span>Question ${index + 1}</span>
+                                    <span class="${item.is_correct ? 'correct-icon' : 'incorrect-icon'}">
+                                        ${item.is_correct ? '✓ Correct' : '✗ Incorrect'}
+                                    </span>
+                                </summary>
+                                <div class="breakdown-content space-y-4">
+                                    <p><strong>Question:</strong> ${item.question}</p>
+                                    <p><strong>Your Answer:</strong> 
+                                        <code class="${item.is_correct ? 'text-green-400' : 'text-red-400'}">
+                                            ${userAnswerText}
+                                        </code>
+                                    </p>
+                                    ${item.user_reasoning ? 
+                                        `<p><strong>Your Reasoning:</strong> <em>"${item.user_reasoning}"</em></p>` : 
+                                        ''}
+                                    ${!item.is_correct ? 
+                                        `<p><strong>Correct Answer:</strong> 
+                                            <code class="text-green-400">${correctAnswerText}</code>
+                                        </p>` : 
+                                        ''}
+                                    <div><strong>Explanation:</strong> <div class="mt-2 text-slate-400">${typeof item.ai_explanation === 'object' ? JSON.stringify(item.ai_explanation, null, 2) : item.ai_explanation}</div></div>
+                                </div>
+                            </details>
+                        `;
+                    }).join('');
+                    
+                    document.getElementById('detailed-breakdown-container').innerHTML = breakdownHtml;
+                }
+            };
+
+            // Event Listeners
+            elements.restartQuizBtn.addEventListener('click', () => {
+                quizData = null;
+                userAnswers = [];
+                currentQuestionIndex = 0;
+                showScreen('setup');
+            });
+
+            elements.restartFromErrorBtn.addEventListener('click', () => showScreen('setup'));
+
+            // Initialize
+            showScreen('setup');
+        });
+    </script>
+</body>
+</html>
